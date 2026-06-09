@@ -20,10 +20,13 @@ namespace Revenue_Recognition_System.Entities
         [Precision(10, 2)]
         public decimal OneYearPrice { get; set; }
 
-        public Category Category { get; set; }
+        public Category Category { get; set; } = null!;
 
         [Required]
         public int CategoryId { get; set; }
 
+        public List<SoftwareVersion> SoftwareVersions { get; set; } = new();
+
+        public List<Discount> Discounts { get; set; } = new();
     }
 }

@@ -14,5 +14,9 @@ namespace Revenue_Recognition_System.Entities
         [Required]
         public string Phone { get; set; } = null!;
 
+        public List<Contract> Contracts { get; set; } = new();
+        public List<Payment> Payments { get; set; } = new();
+
+
     }
 }
