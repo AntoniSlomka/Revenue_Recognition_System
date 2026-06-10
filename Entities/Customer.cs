@@ -5,7 +5,7 @@ namespace Revenue_Recognition_System.Entities
     public class Customer
     {
         [Key]
-        public long Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Address { get; set; } = null!;
         [Required]

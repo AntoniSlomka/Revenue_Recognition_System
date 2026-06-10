@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Revenue_Recognition_System.Entities;
 
 namespace Revenue_Recognition_System.Data
 {
-    public class DatabaseContext(DbContextOptions opt) : DbContext(opt)
+    public class DatabaseContext(DbContextOptions opt) : IdentityDbContext<User>(opt)
     {
         public DbSet<Customer> Customers { get; set; }
         public DbSet<IndividualCustomer> IndividualCustomers { get; set; }
@@ -59,6 +60,15 @@ namespace Revenue_Recognition_System.Data
                 e.Property(s => s.Description).IsRequired();
                 e.Property(s => s.OneYearPrice).IsRequired().HasPrecision(10, 2);
                 e.HasOne(s => s.Category).WithMany(c => c.Softwares).HasForeignKey(s => s.CategoryId);
+            });
+
+            //Category
+            modelBuilder.Entity<Category>(e =>
+            {
+                e.ToTable("Categories");
+                e.HasKey(c => c.CategoryId);
+                e.Property(c => c.Name).IsRequired().HasMaxLength(100);
+                e.Property(c => c.Description).IsRequired().HasMaxLength(200);
             });
 
             // SoftwareVersion

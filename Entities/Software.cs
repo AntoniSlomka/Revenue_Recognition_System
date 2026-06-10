@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Revenue_Recognition_System.Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace Revenue_Recognition_System.Entities
