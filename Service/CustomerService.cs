@@ -1,4 +1,6 @@
-﻿using Revenue_Recognition_System.DTOs;
+﻿using Revenue_Recognition_System.DTOs.Create;
+using Revenue_Recognition_System.DTOs.Get;
+using Revenue_Recognition_System.DTOs.Patch;
 using Revenue_Recognition_System.Repository;
 
 namespace Revenue_Recognition_System.Service
@@ -25,6 +27,16 @@ namespace Revenue_Recognition_System.Service
         public async Task<IGetCustomerSimpleDTO> GetCustomerById(int id)
         {
             return await _repository.GetCustomerById(id);
+        }
+
+        public async Task UpdateIndividualCustomer(int id, PatchIndividualCustomerDTO request)
+        {
+            await _repository.UpdateIndividualCustomer(id, request);
+        }
+
+        public async Task UpdateCompanyCustomer(int id, PatchCompanyCustomerDTO request)
+        {
+            await _repository.UpdateCompanyCustomer(id, request);
         }
     }
 }

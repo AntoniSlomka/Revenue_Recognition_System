@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Revenue_Recognition_System.DTOs
+namespace Revenue_Recognition_System.DTOs.Get
 {
     public class GetIndividualCustomerSimpleDTO : IGetCustomerSimpleDTO
     {

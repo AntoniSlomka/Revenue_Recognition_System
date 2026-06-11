@@ -1,4 +1,6 @@
-﻿using Revenue_Recognition_System.DTOs;
+﻿using Revenue_Recognition_System.DTOs.Create;
+using Revenue_Recognition_System.DTOs.Get;
+using Revenue_Recognition_System.DTOs.Patch;
 
 namespace Revenue_Recognition_System.Repository
 {
@@ -9,5 +11,9 @@ namespace Revenue_Recognition_System.Repository
         Task<int> AddCompanyCustomer(CreateCompanyCustomerDTO request);
 
         Task<IGetCustomerSimpleDTO> GetCustomerById(int id);
+
+        Task UpdateIndividualCustomer(int id, PatchIndividualCustomerDTO request);
+
+        Task UpdateCompanyCustomer(int id, PatchCompanyCustomerDTO request);
     }
 }
