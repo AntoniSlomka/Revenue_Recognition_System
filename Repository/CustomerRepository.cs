@@ -18,6 +18,16 @@ namespace Revenue_Recognition_System.Repository
             _context = databaseContext;
         }
 
+        private async Task<IndividualCustomer?> FindIndividualCustomerById(int id)
+        {
+            return await _context.IndividualCustomers.Where(c => (c.Id == id && !c.IsDeleted)).FirstOrDefaultAsync();
+        }
+
+        private async Task<CompanyCustomer?> FindCompanyCustomerById(int id)
+        {
+            return await _context.CompanyCustomers.Where(c => c.Id == id).FirstOrDefaultAsync();
+        }
+
         public async Task<int> AddIndividualCustomer(CreateIndividualCustomerDTO request)
         {
             var customer = new IndividualCustomer(request.Pesel, request.FirstName, request.LastName)
@@ -50,7 +60,7 @@ namespace Revenue_Recognition_System.Repository
 
         public async Task<IGetCustomerSimpleDTO> GetCustomerById(int id)
         {
-            var individualCustomer = await _context.IndividualCustomers.Where(c => c.Id == id).FirstOrDefaultAsync();
+            var individualCustomer = await FindIndividualCustomerById(id);
 
             if (individualCustomer != null)
             {
@@ -68,7 +78,7 @@ namespace Revenue_Recognition_System.Repository
                 };
             }
 
-            var companyCustomer = await _context.CompanyCustomers.Where(c => c.Id == id).FirstOrDefaultAsync();
+            var companyCustomer = await FindCompanyCustomerById(id);
 
             if (companyCustomer != null)
             {
@@ -91,7 +101,7 @@ namespace Revenue_Recognition_System.Repository
 
         public async Task UpdateIndividualCustomer(int id, PatchIndividualCustomerDTO request)
         {
-            var customer = await _context.IndividualCustomers.Where(c => c.Id == id).FirstOrDefaultAsync();
+            var customer = await FindIndividualCustomerById(id);
 
             if (customer == null) throw new KeyNotFoundException($"Customer with id: {id} not found.");
 
@@ -106,7 +116,7 @@ namespace Revenue_Recognition_System.Repository
 
         public async Task UpdateCompanyCustomer(int id, PatchCompanyCustomerDTO request)
         {
-            var customer = await _context.CompanyCustomers.Where(c => c.Id == id).FirstOrDefaultAsync();
+            var customer = await FindCompanyCustomerById(id);
 
             if (customer == null) throw new KeyNotFoundException($"Customer with id: {id} not found.");
 
@@ -114,6 +124,17 @@ namespace Revenue_Recognition_System.Repository
             customer.Address = request.Address ?? customer.Address;
             customer.Email = request.Email ?? customer.Email;
             customer.Phone = request.Phone ?? customer.Phone;
+
+            await _context.SaveChangesAsync();
+        }
+        public async Task SoftDeleteIndividualCustomer(int id)
+        {
+            var customer = await FindIndividualCustomerById(id);
+
+            if (customer == null) throw new KeyNotFoundException($"Customer with id: {id} not found.");
+
+            customer.IsDeleted = true;
+            customer.DeletedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
         }

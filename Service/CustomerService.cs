@@ -38,5 +38,10 @@ namespace Revenue_Recognition_System.Service
         {
             await _repository.UpdateCompanyCustomer(id, request);
         }
+
+        public async Task SoftDeleteIndividualCustomer(int id)
+        {
+            await _repository.SoftDeleteIndividualCustomer(id);
+        }
     }
 }

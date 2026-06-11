@@ -20,7 +20,7 @@ namespace Revenue_Recognition_System.Controllers
         }
 
         [HttpPost]
-        [Route("individual/add")]
+        [Route("individual")]
         public async Task<ActionResult> AddIndividualCustomer([FromBody] CreateIndividualCustomerDTO request)
         {
             var customerId = await _customerService.AddIndividualCustomer(request);
@@ -30,7 +30,7 @@ namespace Revenue_Recognition_System.Controllers
         }
 
         [HttpPost]
-        [Route("company/add")]
+        [Route("company")]
         public async Task<ActionResult> AddCompanyCustomer([FromBody] CreateCompanyCustomerDTO request)
         {
             var customerId = await _customerService.AddCompanyCustomer(request);
@@ -58,7 +58,7 @@ namespace Revenue_Recognition_System.Controllers
         }
 
         [HttpPatch]
-        [Route("individual/edit/{id:int}")]
+        [Route("individual/{id:int}")]
         public async Task<ActionResult> UpdateIndividualCustomer(int id, PatchIndividualCustomerDTO request)
         {
             try
@@ -77,12 +77,31 @@ namespace Revenue_Recognition_System.Controllers
         }
 
         [HttpPatch]
-        [Route("company/edit/{id:int}")]
+        [Route("company/{id:int}")]
         public async Task<ActionResult> UpdateCompanyCustomer(int id, PatchCompanyCustomerDTO request)
         {
             try
             {
                 await _customerService.UpdateCompanyCustomer(id, request);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("individual/{id:int}")]
+        public async Task<ActionResult> SoftDeleteIndividualCustomer(int id)
+        {
+            try
+            {
+                await _customerService.SoftDeleteIndividualCustomer(id);
                 return NoContent();
             }
             catch (KeyNotFoundException ex)
