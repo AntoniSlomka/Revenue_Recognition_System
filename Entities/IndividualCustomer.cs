@@ -4,6 +4,16 @@ namespace Revenue_Recognition_System.Entities
 {
     public class IndividualCustomer : Customer
     {
+        public IndividualCustomer()
+        {
+        }
+
+        public IndividualCustomer(string pesel, string firstName, string lastName)
+        {
+            Pesel = pesel;
+            FirstName = firstName;
+            LastName = lastName;
+        }
 
         [Required]
         [Length(minimumLength: 11, maximumLength: 11)]

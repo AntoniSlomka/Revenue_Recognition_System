@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Revenue_Recognition_System.Data;
 using Revenue_Recognition_System.Entities;
+using Revenue_Recognition_System.Repository;
+using Revenue_Recognition_System.Service;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -73,6 +75,9 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 var app = builder.Build();
 
