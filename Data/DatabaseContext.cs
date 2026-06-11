@@ -59,7 +59,10 @@ namespace Revenue_Recognition_System.Data
                 e.Property(s => s.Name).IsRequired().HasMaxLength(100);
                 e.Property(s => s.Description).IsRequired();
                 e.Property(s => s.OneYearPrice).IsRequired().HasPrecision(10, 2);
-                e.HasOne(s => s.Category).WithMany(c => c.Softwares).HasForeignKey(s => s.CategoryId);
+                e.HasOne(s => s.Category)
+                    .WithMany(c => c.Softwares)
+                    .HasForeignKey(s => s.CategoryId)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             //Category
@@ -79,7 +82,10 @@ namespace Revenue_Recognition_System.Data
                 e.Property(s => s.VersionName).IsRequired().HasMaxLength(100);
                 e.Property(s => s.ReleaseDate).IsRequired();
                 e.Property(s => s.Description).IsRequired();
-                e.HasOne(s => s.Software).WithMany(s => s.SoftwareVersions).HasForeignKey(s => s.SoftwareId);
+                e.HasOne(s => s.Software)
+                    .WithMany(s => s.SoftwareVersions)
+                    .HasForeignKey(s => s.SoftwareId)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             //Discount
@@ -91,7 +97,10 @@ namespace Revenue_Recognition_System.Data
                 e.Property(d => d.DiscountValue).IsRequired().HasPrecision(4, 2);
                 e.Property(d => d.ActiveFrom).IsRequired();
                 e.Property(d => d.ActiveTo).IsRequired();
-                e.HasOne(d => d.Software).WithMany(s => s.Discounts).HasForeignKey(d => d.SoftwareId);
+                e.HasOne(d => d.Software)
+                    .WithMany(s => s.Discounts)
+                    .HasForeignKey(d => d.SoftwareId)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             //Payment
@@ -101,8 +110,14 @@ namespace Revenue_Recognition_System.Data
                 e.HasKey(p => p.PaymentId);
                 e.Property(p => p.PaymentMethod).IsRequired().HasMaxLength(200);
                 e.Property(p => p.Value).IsRequired().HasPrecision(10, 2);
-                e.HasOne(p => p.Customer).WithMany(c => c.Payments).HasForeignKey(p => p.CustomerId);
-                e.HasOne(p => p.Contract).WithMany(c => c.Payments).HasForeignKey(p => p.ContractId);
+                e.HasOne(p => p.Customer)
+                    .WithMany(c => c.Payments)
+                    .HasForeignKey(p => p.CustomerId)
+                    .OnDelete(DeleteBehavior.NoAction);
+                e.HasOne(p => p.Contract)
+                    .WithMany(c => c.Payments)
+                    .HasForeignKey(p => p.ContractId)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             //Contract
@@ -117,7 +132,10 @@ namespace Revenue_Recognition_System.Data
                 e.Property(c => c.Status).IsRequired().HasConversion<string>().HasMaxLength(50);
                 e.Property(c => c.SignedAt).IsRequired(false);
                 e.Property(c => c.FinalPrice).IsRequired().HasPrecision(10, 2);
-                e.HasOne(c => c.Customer).WithMany(c => c.Contracts).HasForeignKey(p => p.CustomerId);
+                e.HasOne(c => c.Customer)
+                    .WithMany(c => c.Contracts)
+                    .HasForeignKey(p => p.CustomerId)
+                    .OnDelete(DeleteBehavior.NoAction);
                 e.HasOne(c => c.SoftwareVersion).WithMany(c => c.Contracts).HasForeignKey(p => p.SoftwareVersionId);
                 e.HasOne(c => c.Discount).WithMany(c => c.Contracts).HasForeignKey(p => p.DiscountId).IsRequired(false);
             });
