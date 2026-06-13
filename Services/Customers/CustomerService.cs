@@ -1,9 +1,9 @@
 ﻿using Revenue_Recognition_System.DTOs.Create;
 using Revenue_Recognition_System.DTOs.Get;
 using Revenue_Recognition_System.DTOs.Patch;
-using Revenue_Recognition_System.Repository;
+using Revenue_Recognition_System.Repositories.Customers;
 
-namespace Revenue_Recognition_System.Service
+namespace Revenue_Recognition_System.Services.Customers
 {
     public class CustomerService : ICustomerService
     {
@@ -24,7 +24,7 @@ namespace Revenue_Recognition_System.Service
             return await _repository.AddCompanyCustomer(request);
         }
 
-        public async Task<IGetCustomerSimpleDTO> GetCustomerById(int id)
+        public async Task<IGetCustomerShortDTO> GetCustomerById(int id)
         {
             return await _repository.GetCustomerById(id);
         }

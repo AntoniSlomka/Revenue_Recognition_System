@@ -2,7 +2,7 @@
 
 namespace Revenue_Recognition_System.DTOs.Get
 {
-    public class GetIndividualCustomerSimpleDTO : IGetCustomerSimpleDTO
+    public class GetIndividualCustomerShortDTO : IGetCustomerShortDTO
     {
         public int Id { get; set; }
         public string Pesel { get; set; } = null!;

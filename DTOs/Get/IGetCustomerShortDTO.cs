@@ -1,6 +1,6 @@
 ﻿namespace Revenue_Recognition_System.DTOs.Get
 {
-    public interface IGetCustomerSimpleDTO
+    public interface IGetCustomerShortDTO
     {
         public int Id { get; set; }
         public string Address { get; set; }

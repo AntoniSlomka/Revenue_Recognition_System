@@ -7,7 +7,7 @@ using Revenue_Recognition_System.DTOs.Get;
 using Revenue_Recognition_System.DTOs.Patch;
 using Revenue_Recognition_System.Entities;
 
-namespace Revenue_Recognition_System.Repository
+namespace Revenue_Recognition_System.Repositories.Customers
 {
     public class CustomerRepository : ICustomerRepository
     {
@@ -58,13 +58,13 @@ namespace Revenue_Recognition_System.Repository
             return customer.CustomerId;
         }
 
-        public async Task<IGetCustomerSimpleDTO> GetCustomerById(int id)
+        public async Task<IGetCustomerShortDTO> GetCustomerById(int id)
         {
             var individualCustomer = await FindIndividualCustomerById(id);
 
             if (individualCustomer != null)
             {
-                return new GetIndividualCustomerSimpleDTO
+                return new GetIndividualCustomerShortDTO
                 {
                     Id = individualCustomer.CustomerId,
                     Address = individualCustomer.Address,
@@ -82,7 +82,7 @@ namespace Revenue_Recognition_System.Repository
 
             if (companyCustomer != null)
             {
-                return new GetCompanyCustomerSimpleDTO
+                return new GetCompanyCustomerShortDTO
                 {
                     Id = companyCustomer.CustomerId,
                     Address = companyCustomer.Address,

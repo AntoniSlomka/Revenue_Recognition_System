@@ -2,7 +2,7 @@
 using Revenue_Recognition_System.DTOs.Get;
 using Revenue_Recognition_System.DTOs.Patch;
 
-namespace Revenue_Recognition_System.Repository
+namespace Revenue_Recognition_System.Repositories.Customers
 {
     public interface ICustomerRepository
     {
@@ -10,7 +10,7 @@ namespace Revenue_Recognition_System.Repository
 
         Task<int> AddCompanyCustomer(CreateCompanyCustomerDTO request);
 
-        Task<IGetCustomerSimpleDTO> GetCustomerById(int id);
+        Task<IGetCustomerShortDTO> GetCustomerById(int id);
 
         Task UpdateIndividualCustomer(int id, PatchIndividualCustomerDTO request);
 

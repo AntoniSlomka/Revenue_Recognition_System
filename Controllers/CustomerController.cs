@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Revenue_Recognition_System.DTOs.Create;
 using Revenue_Recognition_System.DTOs.Get;
 using Revenue_Recognition_System.DTOs.Patch;
-using Revenue_Recognition_System.Service;
+using Revenue_Recognition_System.Service.Customers;
 
 namespace Revenue_Recognition_System.Controllers
 {
@@ -41,7 +41,7 @@ namespace Revenue_Recognition_System.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        public async Task<ActionResult<IGetCustomerSimpleDTO>> GetCustomerById(int id)
+        public async Task<ActionResult<IGetCustomerShortDTO>> GetCustomerById(int id)
         {
             try
             {
