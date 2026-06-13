@@ -96,9 +96,9 @@ using (var scope = app.Services.CreateScope())
     }
 
     /*var username = "...";
-    var password = "...";*/
+    var password = "...";
 
-    /*if (await userManager.FindByNameAsync(username) == null)
+    if (await userManager.FindByNameAsync(username) == null)
     {
         var admin = new User { UserName = username };
         var result = await userManager.CreateAsync(admin, password);

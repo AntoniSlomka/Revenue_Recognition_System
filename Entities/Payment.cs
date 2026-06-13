@@ -13,11 +13,6 @@ namespace Revenue_Recognition_System.Entities
         [Required]
         public int ContractId { get; set; }
 
-        public Customer Customer { get; set; } = null!;
-
-        [Required]
-        public int CustomerId { get; set; }
-
         [Required]
         [MaxLength(200)]
         public string PaymentMethod { get; set; } = null!;

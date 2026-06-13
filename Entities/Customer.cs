@@ -5,7 +5,7 @@ namespace Revenue_Recognition_System.Entities
     public class Customer
     {
         [Key]
-        public int Id { get; set; }
+        public int CustomerId { get; set; }
         [Required]
         public string Address { get; set; } = null!;
         [Required]
@@ -15,8 +15,6 @@ namespace Revenue_Recognition_System.Entities
         public string Phone { get; set; } = null!;
 
         public List<Contract> Contracts { get; set; } = new();
-        public List<Payment> Payments { get; set; } = new();
-
 
     }
 }

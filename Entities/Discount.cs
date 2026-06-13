@@ -26,6 +26,5 @@ namespace Revenue_Recognition_System.Entities
         [Required]
         public DateTime ActiveTo { get; set; }
 
-        public List<Contract> Contracts { get; set; } = new();
     }
 }

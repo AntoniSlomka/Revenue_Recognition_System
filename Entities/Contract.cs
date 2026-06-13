@@ -18,10 +18,6 @@ namespace Revenue_Recognition_System.Entities
         [Required]
         public int SoftwareVersionId { get; set; }
 
-        public Discount? Discount { get; set; }
-
-        public int? DiscountId { get; set; }
-
         [Required]
         public DateTime StartDate { get; set; }
         [Required]

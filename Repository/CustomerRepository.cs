@@ -20,12 +20,12 @@ namespace Revenue_Recognition_System.Repository
 
         private async Task<IndividualCustomer?> FindIndividualCustomerById(int id)
         {
-            return await _context.IndividualCustomers.Where(c => (c.Id == id && !c.IsDeleted)).FirstOrDefaultAsync();
+            return await _context.IndividualCustomers.Where(c => (c.CustomerId == id && !c.IsDeleted)).FirstOrDefaultAsync();
         }
 
         private async Task<CompanyCustomer?> FindCompanyCustomerById(int id)
         {
-            return await _context.CompanyCustomers.Where(c => c.Id == id).FirstOrDefaultAsync();
+            return await _context.CompanyCustomers.Where(c => c.CustomerId == id).FirstOrDefaultAsync();
         }
 
         public async Task<int> AddIndividualCustomer(CreateIndividualCustomerDTO request)
@@ -40,7 +40,7 @@ namespace Revenue_Recognition_System.Repository
             await _context.Customers.AddAsync(customer);
             await _context.SaveChangesAsync();
 
-            return customer.Id;
+            return customer.CustomerId;
         }
 
         public async Task<int> AddCompanyCustomer(CreateCompanyCustomerDTO request)
@@ -55,7 +55,7 @@ namespace Revenue_Recognition_System.Repository
             await _context.Customers.AddAsync(customer);
             await _context.SaveChangesAsync();
 
-            return customer.Id;
+            return customer.CustomerId;
         }
 
         public async Task<IGetCustomerSimpleDTO> GetCustomerById(int id)
@@ -66,7 +66,7 @@ namespace Revenue_Recognition_System.Repository
             {
                 return new GetIndividualCustomerSimpleDTO
                 {
-                    Id = individualCustomer.Id,
+                    Id = individualCustomer.CustomerId,
                     Address = individualCustomer.Address,
                     Email = individualCustomer.Email,
                     Phone = individualCustomer.Phone,
@@ -84,7 +84,7 @@ namespace Revenue_Recognition_System.Repository
             {
                 return new GetCompanyCustomerSimpleDTO
                 {
-                    Id = companyCustomer.Id,
+                    Id = companyCustomer.CustomerId,
                     Address = companyCustomer.Address,
                     Email = companyCustomer.Email,
                     Phone = companyCustomer.Phone,
