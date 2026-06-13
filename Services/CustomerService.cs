@@ -1,9 +1,9 @@
 ﻿using Revenue_Recognition_System.DTOs.Create;
 using Revenue_Recognition_System.DTOs.Get;
 using Revenue_Recognition_System.DTOs.Patch;
-using Revenue_Recognition_System.Repositories.Customers;
+using Revenue_Recognition_System.Repositories;
 
-namespace Revenue_Recognition_System.Services.Customers
+namespace Revenue_Recognition_System.Services
 {
     public class CustomerService : ICustomerService
     {

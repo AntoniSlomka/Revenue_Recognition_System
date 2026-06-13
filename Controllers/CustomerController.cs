@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Revenue_Recognition_System.DTOs.Create;
 using Revenue_Recognition_System.DTOs.Get;
 using Revenue_Recognition_System.DTOs.Patch;
-using Revenue_Recognition_System.Service.Customers;
+using Revenue_Recognition_System.Services;
 
 namespace Revenue_Recognition_System.Controllers
 {
     [ApiController]
     [Route("api/customers")]
-    [Authorize(Roles = "Employee, Admin")]
+    [Authorize]
     public class CustomerController : ControllerBase
     {
         private readonly ICustomerService _customerService;
@@ -21,6 +21,7 @@ namespace Revenue_Recognition_System.Controllers
 
         [HttpPost]
         [Route("individual")]
+        [Authorize(Roles = "Employee, Admin")]
         public async Task<ActionResult> AddIndividualCustomer([FromBody] CreateIndividualCustomerDTO request)
         {
             var customerId = await _customerService.AddIndividualCustomer(request);
@@ -31,6 +32,7 @@ namespace Revenue_Recognition_System.Controllers
 
         [HttpPost]
         [Route("company")]
+        [Authorize(Roles = "Employee, Admin")]
         public async Task<ActionResult> AddCompanyCustomer([FromBody] CreateCompanyCustomerDTO request)
         {
             var customerId = await _customerService.AddCompanyCustomer(request);
@@ -41,6 +43,7 @@ namespace Revenue_Recognition_System.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
+        [Authorize(Roles = "Employee, Admin")]
         public async Task<ActionResult<IGetCustomerShortDTO>> GetCustomerById(int id)
         {
             try
@@ -59,6 +62,7 @@ namespace Revenue_Recognition_System.Controllers
 
         [HttpPatch]
         [Route("individual/{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> UpdateIndividualCustomer(int id, PatchIndividualCustomerDTO request)
         {
             try
@@ -78,6 +82,7 @@ namespace Revenue_Recognition_System.Controllers
 
         [HttpPatch]
         [Route("company/{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> UpdateCompanyCustomer(int id, PatchCompanyCustomerDTO request)
         {
             try
@@ -97,6 +102,7 @@ namespace Revenue_Recognition_System.Controllers
 
         [HttpDelete]
         [Route("individual/{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> SoftDeleteIndividualCustomer(int id)
         {
             try

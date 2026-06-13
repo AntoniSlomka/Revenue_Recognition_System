@@ -137,6 +137,50 @@ namespace Revenue_Recognition_System.Data
                     .HasForeignKey(p => p.SoftwareVersionId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
+
+            //Seeding
+            modelBuilder.Entity<Category>().HasData(
+                    new Category { CategoryId = 1, Name = "Graphic Design", Description = "Software used for creating different types of graphic media."},
+                    new Category { CategoryId = 2, Name = "Accounting", Description = "Software used for managing accounting in a company."},
+                    new Category { CategoryId = 3, Name = "3D Design", Description = "Software used for creating 3D models."},
+                    new Category { CategoryId = 4, Name = "Audio Design", Description = "Software used for creating audio tracks."}
+                );
+
+            //Software
+            modelBuilder.Entity<Software>().HasData(
+                    new Software { SoftwareId = 1, Name = "PhotoMarket", Description = "PhotoMarket is a picture editing software. (All the funcionalities of Photoshop included)", CategoryId = 1, OneYearPrice = 650.0M},
+                    new Software { SoftwareId = 2, Name = "Accountant3000", Description = "Accountant3000 is a super easy to use accounting software.", CategoryId = 2, OneYearPrice = 840.0M},
+                    new Software { SoftwareId = 3, Name = "IllustrationMaker", Description = "IllustrationMaker allows to make beatiful illustrations in no time.", CategoryId = 1, OneYearPrice = 780.0M},
+                    new Software { SoftwareId = 4, Name = "Blonder", Description = "Blonder is a versatile tool for 3D design.", CategoryId = 3, OneYearPrice = 960.0M}
+
+                );
+
+            //SoftwareVersion   
+            modelBuilder.Entity<SoftwareVersion>().HasData(
+                new SoftwareVersion { VersionId = 1, SoftwareId = 1, VersionName = "1.0.0", Description = "Initial Release", ReleaseDate = new DateTime(2020, 10, 5) },
+                new SoftwareVersion { VersionId = 2, SoftwareId = 1, VersionName = "1.5.0", Description = "Added filters and layer support", ReleaseDate = new DateTime(2021, 3, 12) },
+                new SoftwareVersion { VersionId = 3, SoftwareId = 1, VersionName = "2.0.0", Description = "Major UI overhaul and performance improvements", ReleaseDate = new DateTime(2022, 7, 20) },
+
+                new SoftwareVersion { VersionId = 4, SoftwareId = 2, VersionName = "1.0.0", Description = "Initial Release", ReleaseDate = new DateTime(2019, 5, 1) },
+                new SoftwareVersion { VersionId = 5, SoftwareId = 2, VersionName = "1.2.0", Description = "Added tax report generation", ReleaseDate = new DateTime(2020, 2, 14) },
+                new SoftwareVersion { VersionId = 6, SoftwareId = 2, VersionName = "2.0.0", Description = "Cloud sync and multi-currency support", ReleaseDate = new DateTime(2023, 1, 9) },
+
+                new SoftwareVersion { VersionId = 7, SoftwareId = 3, VersionName = "1.0.0", Description = "Initial Release", ReleaseDate = new DateTime(2021, 6, 15) },
+                new SoftwareVersion { VersionId = 8, SoftwareId = 3, VersionName = "1.3.0", Description = "Added vector tools and brush library", ReleaseDate = new DateTime(2022, 4, 3) },
+                new SoftwareVersion { VersionId = 9, SoftwareId = 3, VersionName = "2.0.0", Description = "AI-assisted drawing and new export formats", ReleaseDate = new DateTime(2023, 9, 18) },
+
+                new SoftwareVersion { VersionId = 10, SoftwareId = 4, VersionName = "1.0.0", Description = "Initial Release", ReleaseDate = new DateTime(2018, 11, 22) },
+                new SoftwareVersion { VersionId = 11, SoftwareId = 4, VersionName = "1.4.0", Description = "Added sculpting tools and material editor", ReleaseDate = new DateTime(2020, 8, 30) },
+                new SoftwareVersion { VersionId = 12, SoftwareId = 4, VersionName = "3.0.0", Description = "Real-time rendering and physics simulation", ReleaseDate = new DateTime(2024, 2, 11) }
+                );
+
+            //Discount
+            modelBuilder.Entity<Discount>().HasData(
+                    new Discount { DiscountId = 1, SoftwareId = 1, DiscountName = "PhotoMarket summer discount", DiscountValue = 0.10M, ActiveFrom = new DateTime(2000, 7, 1), ActiveTo = new DateTime(2000, 8, 31)},
+                    new Discount { DiscountId = 2, SoftwareId = 2, DiscountName = "Accountant3000 summer discount", DiscountValue = 0.05M, ActiveFrom = new DateTime(2000, 7, 1), ActiveTo = new DateTime(2000, 8, 31)},
+                    new Discount { DiscountId = 3, SoftwareId = 3, DiscountName = "IllustrationMaker summer discount", DiscountValue = 0.10M, ActiveFrom = new DateTime(2000, 7, 1), ActiveTo = new DateTime(2000, 8, 31)},
+                    new Discount { DiscountId = 4, SoftwareId = 3, DiscountName = "IllustrationMaker back to school discount", DiscountValue = 0.15M, ActiveFrom = new DateTime(2000, 8, 15), ActiveTo = new DateTime(2000, 9, 30)}
+                );
         }
     }
 }

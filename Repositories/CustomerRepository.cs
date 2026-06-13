@@ -7,7 +7,7 @@ using Revenue_Recognition_System.DTOs.Get;
 using Revenue_Recognition_System.DTOs.Patch;
 using Revenue_Recognition_System.Entities;
 
-namespace Revenue_Recognition_System.Repositories.Customers
+namespace Revenue_Recognition_System.Repositories
 {
     public class CustomerRepository : ICustomerRepository
     {

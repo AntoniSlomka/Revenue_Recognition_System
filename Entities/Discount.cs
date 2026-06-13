@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Revenue_Recognition_System.Entities
 {
@@ -25,6 +26,9 @@ namespace Revenue_Recognition_System.Entities
 
         [Required]
         public DateTime ActiveTo { get; set; }
+
+        [NotMapped]
+        public string ActiveRange => $"{ActiveFrom.Month}-{ActiveFrom.Day} to {ActiveTo.Month}-{ActiveTo.Day}";
 
     }
 }

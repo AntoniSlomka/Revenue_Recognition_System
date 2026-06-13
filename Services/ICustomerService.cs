@@ -2,9 +2,9 @@
 using Revenue_Recognition_System.DTOs.Get;
 using Revenue_Recognition_System.DTOs.Patch;
 
-namespace Revenue_Recognition_System.Repositories.Customers
+namespace Revenue_Recognition_System.Services
 {
-    public interface ICustomerRepository
+    public interface ICustomerService
     {
         Task<int> AddIndividualCustomer(CreateIndividualCustomerDTO request);
 
