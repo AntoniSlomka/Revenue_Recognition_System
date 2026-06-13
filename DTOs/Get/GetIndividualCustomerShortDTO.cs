@@ -4,7 +4,7 @@ namespace Revenue_Recognition_System.DTOs.Get
 {
     public class GetIndividualCustomerShortDTO : IGetCustomerShortDTO
     {
-        public int Id { get; set; }
+        public int CustomerId { get; set; }
         public string Pesel { get; set; } = null!;
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;

@@ -79,6 +79,9 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 
+builder.Services.AddScoped<IContractRepository, ContractRepository>();
+builder.Services.AddScoped<IContractService, ContractService>();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

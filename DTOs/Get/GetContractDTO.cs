@@ -7,8 +7,9 @@ namespace Revenue_Recognition_System.DTOs.Get
     public class GetContractDTO
     {
         public int ContractId { get; set; }
-        public IGetCustomerShortDTO Customer { get; set; } = null!;
-        public GetSoftwareDTO SoftwareVersion { get; set; } = null!;
+        public object Customer { get; set; } = null!;
+        public GetSoftwareDTO Software { get; set; } = null!;
+        public GetSoftwareVersionDTO SoftwareVersion { get; set; } = null!;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int? AdditionalSupportYears { get; set; }

@@ -11,7 +11,6 @@ namespace Revenue_Recognition_System.DTOs.Get
         public string Description { get; set; } = null!;
         public decimal OneYearPrice { get; set; }
         public GetCategoryDTO Category { get; set; } = null!;
-        public List<GetSoftwareVersionDTO> SoftwareVersions { get; set; } = new();
-        public List<GetDiscountForSoftwareDTO> Discounts { get; set; } = new();
+
     }
 }

@@ -66,7 +66,7 @@ namespace Revenue_Recognition_System.Repositories
             {
                 return new GetIndividualCustomerShortDTO
                 {
-                    Id = individualCustomer.CustomerId,
+                    CustomerId = individualCustomer.CustomerId,
                     Address = individualCustomer.Address,
                     Email = individualCustomer.Email,
                     Phone = individualCustomer.Phone,
@@ -84,7 +84,7 @@ namespace Revenue_Recognition_System.Repositories
             {
                 return new GetCompanyCustomerShortDTO
                 {
-                    Id = companyCustomer.CustomerId,
+                    CustomerId = companyCustomer.CustomerId,
                     Address = companyCustomer.Address,
                     Email = companyCustomer.Email,
                     Phone = companyCustomer.Phone,

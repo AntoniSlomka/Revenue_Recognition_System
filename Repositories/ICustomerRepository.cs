@@ -17,5 +17,6 @@ namespace Revenue_Recognition_System.Repositories
         Task UpdateCompanyCustomer(int id, PatchCompanyCustomerDTO request);
 
         Task SoftDeleteIndividualCustomer(int id);
+
     }
 }
