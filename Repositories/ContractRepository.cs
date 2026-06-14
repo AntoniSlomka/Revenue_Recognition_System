@@ -33,6 +33,142 @@ namespace Revenue_Recognition_System.Repositories
             return await _context.Contracts.Where(c => c.CustomerId == id && c.Status == Enums.ContractStatus.Signed).AnyAsync();
         }
 
+        private async Task<GetContractDTO> MapContract(Contract contract)
+        {
+            IGetCustomerShortDTO? customerDTO = null;
+
+            var individualCustomer = await _context.IndividualCustomers.Where(c => c.CustomerId == contract.CustomerId).FirstOrDefaultAsync();
+
+            if (individualCustomer != null)
+            {
+                customerDTO = new GetIndividualCustomerShortDTO
+                {
+                    CustomerId = individualCustomer.CustomerId,
+                    Pesel = individualCustomer.Pesel,
+                    FirstName = individualCustomer.FirstName,
+                    LastName = individualCustomer.LastName,
+                    Address = individualCustomer.Address,
+                    Email = individualCustomer.Email,
+                    Phone = individualCustomer.Phone,
+                    IsDeleted = individualCustomer.IsDeleted,
+                    DeletedAt = individualCustomer.DeletedAt
+                };
+            }
+            else
+            {
+                var companyCustomer = await _context.CompanyCustomers.Where(c => c.CustomerId == contract.CustomerId).FirstOrDefaultAsync();
+
+                if (companyCustomer != null)
+                {
+                    customerDTO = new GetCompanyCustomerShortDTO
+                    {
+                        CustomerId = companyCustomer.CustomerId,
+                        KrsNumber = companyCustomer.KrsNumber,
+                        CompanyName = companyCustomer.CompanyName,
+                        Address = companyCustomer.Address,
+                        Email = companyCustomer.Email,
+                        Phone = companyCustomer.Phone
+                    };
+                }
+                else
+                {
+                    throw new KeyNotFoundException($"Customer with id: {contract.CustomerId} not found.");
+                }
+
+            }
+
+            return new GetContractDTO
+            {
+                ContractId = contract.ContractId,
+                Customer = customerDTO,
+                Software = new GetSoftwareDTO
+                {
+                    SoftwareId = contract.SoftwareVersion.Software.SoftwareId,
+                    Name = contract.SoftwareVersion.Software.Name,
+                    Description = contract.SoftwareVersion.Software.Description,
+                    OneYearPrice = contract.SoftwareVersion.Software.OneYearPrice,
+                    Category = new GetCategoryDTO
+                    {
+                        CategoryId = contract.SoftwareVersion.Software.Category.CategoryId,
+                        Name = contract.SoftwareVersion.Software.Category.Name,
+                        Description = contract.SoftwareVersion.Software.Category.Description
+                    }
+                },
+                SoftwareVersion = new GetSoftwareVersionDTO
+                {
+                    VersionId = contract.SoftwareVersion.VersionId,
+                    VersionName = contract.SoftwareVersion.VersionName,
+                    Description = contract.SoftwareVersion.Description,
+                    ReleaseDate = contract.SoftwareVersion.ReleaseDate
+                },
+                StartDate = contract.StartDate,
+                EndDate = contract.EndDate,
+                AdditionalSupportYears = contract.AdditionalSupportYears,
+                HasReturningDiscount = contract.HasReturningDiscount,
+                Status = contract.Status.ToString(),
+                SignedAt = contract.SignedAt,
+                FinalPrice = contract.FinalPrice,
+                Payments = contract.Payments.Select(p => new GetPaymentDTO
+                {
+                    PaymentId = p.PaymentId,
+                    PaymentMethod = p.PaymentMethod,
+                    Value = p.Value
+                }).ToList()
+            };
+        }
+        public async Task<List<GetContractShortDTO>> GetAllContracts()
+        {
+            var contracts = await _context.Contracts
+                .Include(c => c.SoftwareVersion)
+                .Include(c => c.Payments)
+                .Select(c => new GetContractShortDTO
+                {
+                    ContractId = c.ContractId,
+                    SoftwareId = c.SoftwareVersion.SoftwareId,
+                    HasReturningDiscount = c.HasReturningDiscount,
+                    Status = c.Status,
+                    SignedAt = c.SignedAt,
+                    FinalPrice = c.FinalPrice,
+                    Payments = c.Payments.Select(p => new GetPaymentDTO
+                    {
+                        PaymentId = p.PaymentId,
+                        PaymentMethod = p.PaymentMethod,
+                        Value = p.Value
+                    }).ToList()
+                }).ToListAsync();
+
+            return contracts;
+        }
+
+        public async Task<List<GetContractShortDTO>> GetAllContractsBySoftwareId(int id)
+        {
+            var software = await _context.Softwares.Where(s => s.SoftwareId == id).FirstOrDefaultAsync();
+
+            if (software == null) throw new KeyNotFoundException($"Software with id: {id} not found.");
+
+            var contracts = await _context.Contracts
+                .Where(c => c.SoftwareVersion.SoftwareId == id)
+                .Include(c => c.SoftwareVersion)
+                .Include(c => c.Payments)
+                .Select(c => new GetContractShortDTO
+                {
+                    ContractId = c.ContractId,
+                    SoftwareId = c.SoftwareVersion.SoftwareId,
+                    HasReturningDiscount = c.HasReturningDiscount,
+                    Status = c.Status,
+                    SignedAt = c.SignedAt,
+                    FinalPrice = c.FinalPrice,
+                    Payments = c.Payments.Select(p => new GetPaymentDTO
+                    {
+                        PaymentId = p.PaymentId,
+                        PaymentMethod = p.PaymentMethod,
+                        Value = p.Value
+                    }).ToList()
+                }).ToListAsync();
+
+            return contracts;
+        }
+
         public async Task<int> AddNewContract(CreateContractDTO request)
         {
             var softwareVersion = await _context.SoftwareVersions
@@ -113,6 +249,8 @@ namespace Revenue_Recognition_System.Repositories
 
         public async Task<GetContractDTO> GetContractById(int id)
         {
+            await UpdateInactiveContracts();
+
             var contract = await _context.Contracts
                 .Where(c => c.ContractId == id)
                 .Include(c => c.SoftwareVersion)
@@ -123,98 +261,14 @@ namespace Revenue_Recognition_System.Repositories
 
             if (contract == null) throw new KeyNotFoundException($"Contract with id: {id} not found.");
 
-            IGetCustomerShortDTO? customerDTO = null;
-
-            var individualCustomer = await _context.IndividualCustomers.Where(c => c.CustomerId == contract.CustomerId).FirstOrDefaultAsync();
-
-            if (individualCustomer != null)
-            {
-                customerDTO = new GetIndividualCustomerShortDTO
-                {
-                    CustomerId = individualCustomer.CustomerId,
-                    Pesel = individualCustomer.Pesel,
-                    FirstName = individualCustomer.FirstName,
-                    LastName = individualCustomer.LastName,
-                    Address = individualCustomer.Address,
-                    Email = individualCustomer.Email,
-                    Phone = individualCustomer.Phone,
-                    IsDeleted = individualCustomer.IsDeleted,
-                    DeletedAt = individualCustomer.DeletedAt
-                };
-            } 
-            else
-            {
-                var companyCustomer = await _context.CompanyCustomers.Where(c => c.CustomerId == contract.CustomerId).FirstOrDefaultAsync();
-
-                if (companyCustomer != null)
-                {
-                    customerDTO = new GetCompanyCustomerShortDTO
-                    {
-                        CustomerId = companyCustomer.CustomerId,
-                        KrsNumber = companyCustomer.KrsNumber,
-                        CompanyName = companyCustomer.CompanyName,
-                        Address = companyCustomer.Address,
-                        Email = companyCustomer.Email,
-                        Phone = companyCustomer.Phone
-                    };
-                }
-                else
-                {
-                    throw new KeyNotFoundException($"Customer with id: {contract.CustomerId} not found.");
-                }
-
-            }
-
-            return new GetContractDTO
-            {
-                ContractId = contract.ContractId,
-                Customer = customerDTO,
-                Software = new GetSoftwareDTO
-                {
-                    SoftwareId = contract.SoftwareVersion.Software.SoftwareId,
-                    Name = contract.SoftwareVersion.Software.Name,
-                    Description = contract.SoftwareVersion.Software.Description,
-                    OneYearPrice = contract.SoftwareVersion.Software.OneYearPrice,
-                    Category = new GetCategoryDTO
-                    {
-                        CategoryId = contract.SoftwareVersion.Software.Category.CategoryId,
-                        Name = contract.SoftwareVersion.Software.Category.Name,
-                        Description = contract.SoftwareVersion.Software.Category.Description
-                    }
-                },
-                SoftwareVersion = new GetSoftwareVersionDTO
-                {
-                    VersionId = contract.SoftwareVersion.VersionId,
-                    VersionName = contract.SoftwareVersion.VersionName,
-                    Description = contract.SoftwareVersion.Description,
-                    ReleaseDate = contract.SoftwareVersion.ReleaseDate
-                },
-                StartDate = contract.StartDate,
-                EndDate = contract.EndDate,
-                AdditionalSupportYears = contract.AdditionalSupportYears,
-                HasReturningDiscount = contract.HasReturningDiscount,
-                Status = contract.Status,
-                SignedAt = contract.SignedAt,
-                FinalPrice = contract.FinalPrice,
-                Payments = contract.Payments.Select(p => new GetPaymentDTO
-                {
-                    PaymentId = p.PaymentId,
-                    PaymentMethod = p.PaymentMethod,
-                    Value = p.Value
-                }).ToList()
-            };
-        }
-
-        private bool IsBetweenDates(DateTime startDate, DateTime endDate, DateTime date)
-        {
-            return startDate < date && date < endDate;
+            return await MapContract(contract);
         }
 
         private async Task UpdateInactiveContracts()
         {
             var createdContracts = await _context.Contracts.Where(c => c.Status == Enums.ContractStatus.Created).ToListAsync();
 
-            var expiredContracts = createdContracts.Where(c => !IsBetweenDates(c.StartDate, c.EndDate, DateTime.UtcNow)).ToList();
+            var expiredContracts = createdContracts.Where(c => DateTime.UtcNow > c.EndDate).ToList();
 
             foreach (var contract in expiredContracts)
             {
@@ -237,7 +291,7 @@ namespace Revenue_Recognition_System.Repositories
 
                 if (contract == null) throw new KeyNotFoundException($"Contract with id: {id} not found.");
 
-                if (contract.Status == Enums.ContractStatus.Inactive || contract.Status == Enums.ContractStatus.Signed)
+                if (contract.Status.ToString() == "Inactive" || contract.Status.ToString() == "Signed")
                 {
                     throw new InvalidDataException("Only contracts with status 'Created' accept payments.");
                 }
@@ -251,6 +305,7 @@ namespace Revenue_Recognition_System.Repositories
 
                 var payment = new Payment
                 {
+                    Contract = contract,
                     PaymentMethod = request.PaymentMethod,
                     Value = request.Value
                 };
@@ -263,7 +318,7 @@ namespace Revenue_Recognition_System.Repositories
                     contract.SignedAt = DateTime.UtcNow;
                 }
 
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();/////
                 await transaction.CommitAsync();
             }
             catch

@@ -12,5 +12,9 @@ namespace Revenue_Recognition_System.Repositories
         Task ProccessContractPayment(int id, CreatePaymentDTO request);
 
         Task DeleteContractById(int id);
+
+        Task<List<GetContractShortDTO>> GetAllContracts();
+
+        Task<List<GetContractShortDTO>> GetAllContractsBySoftwareId(int id);
     }
 }

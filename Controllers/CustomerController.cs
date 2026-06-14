@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Revenue_Recognition_System.DTOs.Create;
 using Revenue_Recognition_System.DTOs.Get;
 using Revenue_Recognition_System.DTOs.Patch;
@@ -24,10 +26,22 @@ namespace Revenue_Recognition_System.Controllers
         [Authorize(Roles = "Employee, Admin")]
         public async Task<ActionResult> AddIndividualCustomer([FromBody] CreateIndividualCustomerDTO request)
         {
-            var customerId = await _customerService.AddIndividualCustomer(request);
-            var customer = await _customerService.GetCustomerById(customerId);
+            try
+            {
+                var customerId = await _customerService.AddIndividualCustomer(request);
+                var customer = await _customerService.GetCustomerById(customerId);
 
-            return CreatedAtAction(nameof(GetCustomerById), new { id = customerId }, customer);
+                return CreatedAtAction(nameof(GetCustomerById), new { id = customerId }, customer);
+            }
+            catch (DbUpdateException ex)
+            {
+                return Conflict(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
         }
 
         [HttpPost]
@@ -35,10 +49,21 @@ namespace Revenue_Recognition_System.Controllers
         [Authorize(Roles = "Employee, Admin")]
         public async Task<ActionResult> AddCompanyCustomer([FromBody] CreateCompanyCustomerDTO request)
         {
-            var customerId = await _customerService.AddCompanyCustomer(request);
-            var customer = await _customerService.GetCustomerById(customerId);
+            try
+            {
+                var customerId = await _customerService.AddCompanyCustomer(request);
+                var customer = await _customerService.GetCustomerById(customerId);
 
-            return CreatedAtAction(nameof(GetCustomerById), new { id = customerId }, customer);
+                return CreatedAtAction(nameof(GetCustomerById), new { id = customerId }, customer);
+            }
+            catch (DbUpdateException ex)
+            {
+                return Conflict(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpGet]

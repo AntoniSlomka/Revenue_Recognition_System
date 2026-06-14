@@ -14,7 +14,7 @@ namespace Revenue_Recognition_System.DTOs.Get
         public DateTime EndDate { get; set; }
         public int? AdditionalSupportYears { get; set; }
         public bool HasReturningDiscount { get; set; }
-        public ContractStatus Status { get; set; }
+        public string Status { get; set; } = null!;
         public DateTime? SignedAt { get; set; }
         public decimal FinalPrice { get; set; }
         public List<GetPaymentDTO> Payments { get; set; } = new();

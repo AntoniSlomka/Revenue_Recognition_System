@@ -76,11 +76,20 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddHttpClient("CurrencyExchange", client =>
+{
+    client.BaseAddress = new Uri("https://api.nbp.pl/");
+});
+
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 builder.Services.AddScoped<IContractRepository, ContractRepository>();
 builder.Services.AddScoped<IContractService, ContractService>();
+
+builder.Services.AddScoped<ISoftwareRepository, SoftwareRepository>();
+
+builder.Services.AddScoped<IRevenueService, RevenueService>();
 
 var app = builder.Build();
 
