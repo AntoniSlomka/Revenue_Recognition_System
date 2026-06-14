@@ -45,5 +45,92 @@ namespace Revenue_Recognition_System.Controllers
                 }
             }
         }
+
+        [HttpGet]
+        [Route("/total")]
+        public async Task<ActionResult<GetProductRevenueDTO>> GetTotalRevenue([FromQuery] string? currencyCode)
+        {
+            try
+            {
+                return Ok(await _revenueService.GetTotalRevenue(currencyCode));
+            }
+            catch (ExternalServerExcpetion ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("404"))
+                {
+                    return NotFound(ex.Message);
+                }
+                else if (ex.Message.Contains("400"))
+                {
+                    return BadRequest(ex.Message);
+                }
+                else
+                {
+                    return StatusCode(500, ex.Message);
+                }
+            }
+        }
+
+        [HttpGet]
+        [Route("predict/product/{id:int}")]
+        public async Task<ActionResult<GetProductRevenueDTO>> GetPredictedProductRevenue(int id, [FromQuery] string? currencyCode)
+        {
+            try
+            {
+                return Ok(await _revenueService.GetPredictedProductRevenueById(id, currencyCode));
+            }
+            catch (ExternalServerExcpetion ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("404"))
+                {
+                    return NotFound(ex.Message);
+                }
+                else if (ex.Message.Contains("400"))
+                {
+                    return BadRequest(ex.Message);
+                }
+                else
+                {
+                    return StatusCode(500, ex.Message);
+                }
+            }
+        }
+
+        [HttpGet]
+        [Route("predict/total")]
+        public async Task<ActionResult<GetProductRevenueDTO>> GetPredictedTotalRevenue([FromQuery] string? currencyCode)
+        {
+            try
+            {
+                return Ok(await _revenueService.GetPredictedTotalRevenue(currencyCode));
+            }
+            catch (ExternalServerExcpetion ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("404"))
+                {
+                    return NotFound(ex.Message);
+                }
+                else if (ex.Message.Contains("400"))
+                {
+                    return BadRequest(ex.Message);
+                }
+                else
+                {
+                    return StatusCode(500, ex.Message);
+                }
+            }
+        }
     }
 }
