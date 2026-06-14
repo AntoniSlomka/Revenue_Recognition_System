@@ -9,7 +9,7 @@ namespace Revenue_Recognition_System.Controllers
 {
     [ApiController]
     [Route("api/contracts")]
-    //[Authorize(Roles = "Admin, Employee")]
+    [Authorize(Roles = "Admin, Employee")]
     public class ContractController : ControllerBase
     {
         private readonly IContractService _contractService;

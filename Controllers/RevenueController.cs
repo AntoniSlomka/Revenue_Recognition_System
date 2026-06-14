@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Revenue_Recognition_System.DTOs.Get;
 using Revenue_Recognition_System.Exceptions;
 using Revenue_Recognition_System.Services;
@@ -7,7 +8,7 @@ namespace Revenue_Recognition_System.Controllers
 {
     [ApiController]
     [Route("api/revenue")]
-    //[Authorize(Roles = "Admin, Employee")]
+    [Authorize(Roles = "Admin, Employee")]
     public class RevenueController : ControllerBase
     {
         private readonly IRevenueService _revenueService;
@@ -17,8 +18,9 @@ namespace Revenue_Recognition_System.Controllers
             _revenueService = revenueService;
         }
 
+        
         [HttpGet]
-        [Route("/product/{id:int}")]
+        [Route("product/{id:int}")]
         public async Task<ActionResult<GetProductRevenueDTO>> GetProductRevenue(int id, [FromQuery] string? currencyCode)
         {
             try
@@ -33,11 +35,11 @@ namespace Revenue_Recognition_System.Controllers
             {
                 if (ex.Message.Contains("404"))
                 {
-                    return NotFound(ex.Message);
+                    return NotFound(ex.Message + " Currency codes according to: https://pl.wikipedia.org/wiki/ISO_4217");
                 }
                 else if (ex.Message.Contains("400"))
                 {
-                    return BadRequest(ex.Message);
+                    return BadRequest(ex.Message + " Currency codes according to: https://pl.wikipedia.org/wiki/ISO_4217");
                 }
                 else
                 {
@@ -47,7 +49,7 @@ namespace Revenue_Recognition_System.Controllers
         }
 
         [HttpGet]
-        [Route("/total")]
+        [Route("total")]
         public async Task<ActionResult<GetProductRevenueDTO>> GetTotalRevenue([FromQuery] string? currencyCode)
         {
             try
@@ -62,11 +64,11 @@ namespace Revenue_Recognition_System.Controllers
             {
                 if (ex.Message.Contains("404"))
                 {
-                    return NotFound(ex.Message);
+                    return NotFound(ex.Message + " Currency codes according to: https://pl.wikipedia.org/wiki/ISO_4217");
                 }
                 else if (ex.Message.Contains("400"))
                 {
-                    return BadRequest(ex.Message);
+                    return BadRequest(ex.Message + " Currency codes according to: https://pl.wikipedia.org/wiki/ISO_4217");
                 }
                 else
                 {
@@ -91,11 +93,11 @@ namespace Revenue_Recognition_System.Controllers
             {
                 if (ex.Message.Contains("404"))
                 {
-                    return NotFound(ex.Message);
+                    return NotFound(ex.Message + " Currency codes according to: https://pl.wikipedia.org/wiki/ISO_4217");
                 }
                 else if (ex.Message.Contains("400"))
                 {
-                    return BadRequest(ex.Message);
+                    return BadRequest(ex.Message + " Currency codes according to: https://pl.wikipedia.org/wiki/ISO_4217");
                 }
                 else
                 {
@@ -120,11 +122,11 @@ namespace Revenue_Recognition_System.Controllers
             {
                 if (ex.Message.Contains("404"))
                 {
-                    return NotFound(ex.Message);
+                    return NotFound(ex.Message + " Currency codes according to: https://pl.wikipedia.org/wiki/ISO_4217");
                 }
                 else if (ex.Message.Contains("400"))
                 {
-                    return BadRequest(ex.Message);
+                    return BadRequest(ex.Message + " Currency codes according to: https://pl.wikipedia.org/wiki/ISO_4217");
                 }
                 else
                 {
