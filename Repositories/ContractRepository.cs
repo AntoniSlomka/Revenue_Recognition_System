@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Revenue_Recognition_System.Data;
 using Revenue_Recognition_System.DTOs.Create;
 using Revenue_Recognition_System.DTOs.Get;
 using Revenue_Recognition_System.Entities;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace Revenue_Recognition_System.Repositories
 {
@@ -45,6 +47,14 @@ namespace Revenue_Recognition_System.Repositories
                 .FirstOrDefaultAsync();
 
             if (customer == null) throw new KeyNotFoundException($"Customer with id: {request.CustomerId} not found.");
+
+            var previousContract = await _context.Contracts
+                .Where(c => (c.CustomerId == customer.CustomerId 
+                    && c.SoftwareVersion.SoftwareId == softwareVersion.SoftwareId 
+                    && (c.Status == Enums.ContractStatus.Created || c.Status == Enums.ContractStatus.Signed)))
+                .FirstOrDefaultAsync();
+
+            if (previousContract != null) throw new InvalidDataException("Customer already has an existing contract for this product.");
 
             var allDiscounts = await _context.Discounts
                 .Where(d => d.SoftwareId == softwareVersion.SoftwareId)
@@ -193,6 +203,85 @@ namespace Revenue_Recognition_System.Repositories
                     Value = p.Value
                 }).ToList()
             };
+        }
+
+        private bool IsBetweenDates(DateTime startDate, DateTime endDate, DateTime date)
+        {
+            return startDate < date && date < endDate;
+        }
+
+        private async Task UpdateInactiveContracts()
+        {
+            var createdContracts = await _context.Contracts.Where(c => c.Status == Enums.ContractStatus.Created).ToListAsync();
+
+            var expiredContracts = createdContracts.Where(c => !IsBetweenDates(c.StartDate, c.EndDate, DateTime.UtcNow)).ToList();
+
+            foreach (var contract in expiredContracts)
+            {
+                contract.Status = Enums.ContractStatus.Inactive;
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ProccessContractPayment(int id, CreatePaymentDTO request)
+        {
+            await UpdateInactiveContracts();
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var contract = await _context.Contracts.Where(c => c.ContractId == id)
+                    .Include(c => c.Payments)
+                    .FirstOrDefaultAsync();
+
+                if (contract == null) throw new KeyNotFoundException($"Contract with id: {id} not found.");
+
+                if (contract.Status == Enums.ContractStatus.Inactive || contract.Status == Enums.ContractStatus.Signed)
+                {
+                    throw new InvalidDataException("Only contracts with status 'Created' accept payments.");
+                }
+
+                var totalPayed = contract.Payments.Sum(p => p.Value);
+
+                if (totalPayed + request.Value > contract.FinalPrice)
+                {
+                    throw new InvalidDataException($"The sum of all payments cannot exceede the final price of the contract.");
+                }
+
+                var payment = new Payment
+                {
+                    PaymentMethod = request.PaymentMethod,
+                    Value = request.Value
+                };
+
+                await _context.Payments.AddAsync(payment);
+
+                if (totalPayed +  payment.Value == contract.FinalPrice)
+                {
+                    contract.Status = Enums.ContractStatus.Signed;
+                    contract.SignedAt = DateTime.UtcNow;
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+
+        }
+
+        public async Task DeleteContractById(int id)
+        {
+            var contract = await _context.Contracts.Where(c => c.ContractId == id).FirstOrDefaultAsync();
+
+            if (contract == null) throw new KeyNotFoundException($"Contract with id: {id} not found.");
+
+            _context.Contracts.Remove(contract);
+            await _context.SaveChangesAsync();
         }
     }
 }

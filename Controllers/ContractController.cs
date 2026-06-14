@@ -26,7 +26,7 @@ namespace Revenue_Recognition_System.Controllers
             {
                 var contractId = await _contractService.AddNewContract(request);
                 var contract = await _contractService.GetContractById(contractId);
-                return CreatedAtAction(nameof(GetContractById), new {id =  contractId}, contract);
+                return CreatedAtAction(nameof(GetContractById), new { id = contractId }, contract);
             }
             catch (KeyNotFoundException ex)
             {
@@ -47,7 +47,40 @@ namespace Revenue_Recognition_System.Controllers
             }
             catch (KeyNotFoundException ex)
             {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("{id:int}/payments")]
+        public async Task<ActionResult> AddPaymentForContract(int id, [FromBody] CreatePaymentDTO request)
+        {
+            try
+            {
+                await _contractService.ProccessContractPayment(id, request);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
                 return NotFound(ex.Message);                
+            }
+            catch (InvalidDataException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> DeleteContract(int id)
+        {
+            try
+            {
+                await _contractService.DeleteContractById(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
         }
     }

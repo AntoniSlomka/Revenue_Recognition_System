@@ -8,5 +8,9 @@ namespace Revenue_Recognition_System.Services
         Task<int> AddNewContract(CreateContractDTO request);
 
         Task<GetContractDTO> GetContractById(int id);
+
+        Task ProccessContractPayment(int id, CreatePaymentDTO request);
+
+        Task DeleteContractById(int id);
     }
 }

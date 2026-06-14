@@ -18,9 +18,21 @@ namespace Revenue_Recognition_System.Services
             return await _repository.AddNewContract(request);
         }
 
+        public async Task DeleteContractById(int id)
+        {
+            await _repository.DeleteContractById(id);
+        }
+
         public async Task<GetContractDTO> GetContractById(int id)
         {
             return await _repository.GetContractById(id);
         }
+
+        public async Task ProccessContractPayment(int id, CreatePaymentDTO request)
+        {
+            await _repository.ProccessContractPayment(id, request);
+        }
+
+
     }
 }
