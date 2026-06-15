@@ -291,10 +291,9 @@ namespace Revenue_Recognition_System.Repositories
 
                 if (contract == null) throw new KeyNotFoundException($"Contract with id: {id} not found.");
 
-                if (contract.Status.ToString() == "Inactive" || contract.Status.ToString() == "Signed")
-                {
-                    throw new InvalidDataException("Only contracts with status 'Created' accept payments.");
-                }
+                if (contract.Status.ToString() == "Inactive" || contract.Status.ToString() == "Signed") throw new InvalidDataException("Only contracts with status 'Created' accept payments.");
+
+                if (DateTime.UtcNow < contract.StartDate || contract.EndDate < DateTime.UtcNow) throw new InvalidDataException("Contract can only accept payments in the specified time range.");
 
                 var totalPayed = contract.Payments.Sum(p => p.Value);
 
