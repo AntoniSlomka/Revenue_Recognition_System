@@ -17,7 +17,7 @@ namespace Revenue_Recognition_System.Services
             _httpClientFactory = httpClientFactory;
         }
 
-        protected decimal CalculateProductRevenue(int id, List<GetContractShortDTO> contracts)
+        private decimal CalculateRevenue(List<GetContractShortDTO> contracts)
         {
             var signedContracts = contracts.Where(c => c.Status == Enums.ContractStatus.Signed).ToList();
 
@@ -26,27 +26,7 @@ namespace Revenue_Recognition_System.Services
             return total;
         }
 
-        private decimal CalculateTotalRevenue(List<GetContractShortDTO> contracts)
-        {
-            var signedContracts = contracts.Where(c => c.Status == Enums.ContractStatus.Signed).ToList();
-
-            var total = signedContracts.Sum(c => c.FinalPrice);
-
-            return total;
-        }
-
-        private decimal CalculatePredictedProductRevenue(int id, List<GetContractShortDTO> contracts)
-        {
-            var activeContracts = contracts
-                .Where(c => (c.Status.ToString() == "Signed" || c.Status.ToString() == "Created"))
-                .ToList();
-
-            var total = activeContracts.Sum(c => c.FinalPrice);
-
-            return total;
-        }
-
-        private decimal CalculatePredictedTotalRevenue(List<GetContractShortDTO> contracts)
+        private decimal CalculatePredictedRevenue(List<GetContractShortDTO> contracts)
         {
             var activeContracts = contracts
                 .Where(c => (c.Status.ToString() == "Signed" || c.Status.ToString() == "Created"))
@@ -73,7 +53,7 @@ namespace Revenue_Recognition_System.Services
 
             var contracts = await _contractRepository.GetAllContractsBySoftwareId(id);
 
-            var total = CalculateProductRevenue(id, contracts);
+            var total = CalculateRevenue(contracts);
 
             if (code != null)
             {
@@ -85,7 +65,7 @@ namespace Revenue_Recognition_System.Services
                     Name = product.Name,
                     RevenueInPLN = total,
                     AlternateCurrency = code,
-                    RevenueInAlternateCurrency = total / exchangeRate
+                    RevenueInAlternateCurrency = ((int)(total / exchangeRate * 100)) / 100.0M
                 };
             }
             return new GetProductRevenueDTO
@@ -100,7 +80,7 @@ namespace Revenue_Recognition_System.Services
         {
             var contracts = await _contractRepository.GetAllContracts();
 
-            var total = CalculateTotalRevenue(contracts);
+            var total = CalculateRevenue(contracts);
 
             if (code != null)
             {
@@ -125,7 +105,7 @@ namespace Revenue_Recognition_System.Services
 
             var contracts = await _contractRepository.GetAllContractsBySoftwareId(id);
 
-            var total = CalculatePredictedProductRevenue(id, contracts);
+            var total = CalculatePredictedRevenue(contracts);
 
             if (code != null)
             {
@@ -137,7 +117,7 @@ namespace Revenue_Recognition_System.Services
                     Name = product.Name,
                     RevenueInPLN = total,
                     AlternateCurrency = code,
-                    RevenueInAlternateCurrency = total / exchangeRate
+                    RevenueInAlternateCurrency = ((int)(total / exchangeRate * 100)) / 100.0M
                 };
             }
             return new GetProductRevenueDTO
@@ -152,7 +132,7 @@ namespace Revenue_Recognition_System.Services
         {
             var contracts = await _contractRepository.GetAllContracts();
 
-            var total = CalculatePredictedTotalRevenue(contracts);
+            var total = CalculatePredictedRevenue(contracts);
 
             if (code != null)
             {

@@ -44,5 +44,25 @@ namespace Revenue_Recognition_System.Tests
 
             Assert.Equal(5790, result.RevenueInPLN);
         }
+
+        [Fact]
+        public async Task GetTotalPredictedRevenue()
+        {
+            var contracts = new List<GetContractShortDTO>
+            {
+                new() { Status = Enums.ContractStatus.Signed, FinalPrice = 4500 },
+                new() { Status = Enums.ContractStatus.Created, FinalPrice = 3780 },
+                new() { Status = Enums.ContractStatus.Signed, FinalPrice = 1290 },
+                new() { Status = Enums.ContractStatus.Created, FinalPrice = 5600 },
+                new() { Status = Enums.ContractStatus.Inactive, FinalPrice = 2000 },
+            };
+
+            _contractRepositoryMock.Setup(r => r.GetAllContracts())
+                .ReturnsAsync(contracts);
+
+            var result = await _revenueServiceMock.GetPredictedTotalRevenue(null);
+
+            Assert.Equal(15170, result.RevenueInPLN);
+        }
     }
 }
