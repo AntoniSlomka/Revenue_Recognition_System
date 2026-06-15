@@ -7,6 +7,13 @@
   </PropertyGroup>
 
 	<ItemGroup>
+		<Compile Remove="Revenue_Recognition_System.Tests/**" />
+		<Content Remove="Revenue_Recognition_System.Tests/**" />
+		<EmbeddedResource Remove="Revenue_Recognition_System.Tests/**" />
+		<None Remove="Revenue_Recognition_System.Tests/**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />

@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="Revenue_Recognition_System.csproj" />
+  <Project Path="Revenue_Recognition_System.Tests/Revenue_Recognition_System.Tests.csproj" />
 </Solution>

@@ -17,10 +17,8 @@ namespace Revenue_Recognition_System.Services
             _httpClientFactory = httpClientFactory;
         }
 
-        private async Task<decimal> CalculateProductRevenue(int id)
+        protected decimal CalculateProductRevenue(int id, List<GetContractShortDTO> contracts)
         {
-            var contracts = await _contractRepository.GetAllContractsBySoftwareId(id);
-
             var signedContracts = contracts.Where(c => c.Status == Enums.ContractStatus.Signed).ToList();
 
             var total = signedContracts.Sum(c => c.FinalPrice);
@@ -28,10 +26,8 @@ namespace Revenue_Recognition_System.Services
             return total;
         }
 
-        private async Task<decimal> CalculateTotalRevenue()
+        private decimal CalculateTotalRevenue(List<GetContractShortDTO> contracts)
         {
-            var contracts = await _contractRepository.GetAllContracts();
-
             var signedContracts = contracts.Where(c => c.Status == Enums.ContractStatus.Signed).ToList();
 
             var total = signedContracts.Sum(c => c.FinalPrice);
@@ -39,10 +35,8 @@ namespace Revenue_Recognition_System.Services
             return total;
         }
 
-        private async Task<decimal> CalculatePredictedProductRevenue(int id)
+        private decimal CalculatePredictedProductRevenue(int id, List<GetContractShortDTO> contracts)
         {
-            var contracts = await _contractRepository.GetAllContractsBySoftwareId(id);
-
             var activeContracts = contracts
                 .Where(c => (c.Status.ToString() == "Signed" || c.Status.ToString() == "Created"))
                 .ToList();
@@ -52,10 +46,8 @@ namespace Revenue_Recognition_System.Services
             return total;
         }
 
-        private async Task<decimal> CalculatePredictedTotalRevenue()
+        private decimal CalculatePredictedTotalRevenue(List<GetContractShortDTO> contracts)
         {
-            var contracts = await _contractRepository.GetAllContracts();
-
             var activeContracts = contracts
                 .Where(c => (c.Status.ToString() == "Signed" || c.Status.ToString() == "Created"))
                 .ToList();
@@ -78,7 +70,10 @@ namespace Revenue_Recognition_System.Services
         public async Task<GetProductRevenueDTO> GetProductRevenueById(int id, string? code)
         {
             var product = await _softwareRepository.GetSoftwareById(id);
-            var total = await CalculateProductRevenue(id);
+
+            var contracts = await _contractRepository.GetAllContractsBySoftwareId(id);
+
+            var total = CalculateProductRevenue(id, contracts);
 
             if (code != null)
             {
@@ -103,7 +98,9 @@ namespace Revenue_Recognition_System.Services
 
         public async Task<GetTotalRevenue> GetTotalRevenue(string? code)
         {
-            var total = await CalculateTotalRevenue();
+            var contracts = await _contractRepository.GetAllContracts();
+
+            var total = CalculateTotalRevenue(contracts);
 
             if (code != null)
             {
@@ -125,7 +122,10 @@ namespace Revenue_Recognition_System.Services
         public async Task<GetProductRevenueDTO> GetPredictedProductRevenueById(int id, string? code)
         {
             var product = await _softwareRepository.GetSoftwareById(id);
-            var total = await CalculatePredictedProductRevenue(id);
+
+            var contracts = await _contractRepository.GetAllContractsBySoftwareId(id);
+
+            var total = CalculatePredictedProductRevenue(id, contracts);
 
             if (code != null)
             {
@@ -150,7 +150,9 @@ namespace Revenue_Recognition_System.Services
 
         public async Task<GetTotalRevenue> GetPredictedTotalRevenue(string? code)
         {
-            var total = await CalculatePredictedTotalRevenue();
+            var contracts = await _contractRepository.GetAllContracts();
+
+            var total = CalculatePredictedTotalRevenue(contracts);
 
             if (code != null)
             {
@@ -170,4 +172,5 @@ namespace Revenue_Recognition_System.Services
         }
 
     }
+
 }
